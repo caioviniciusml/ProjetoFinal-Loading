@@ -1,0 +1,33 @@
+#task-input{
+    margin: 20px 0;
+    display: flex;
+    width: 100%;
+}
+#new-task-text-field{
+    padding: 10px 20px;
+    flex-grow: 1;
+    font-weight: 900;
+    color: #EDECEE;
+    background-color: #ffffff79;
+    border: 2px solid #00c1b2;
+    border-radius: 20px;
+}
+#new-task-text-field:focus{
+    outline: none;
+}
+#new-task-text-field::placeholder{
+    font: inherit;
+    color: #EDECEE;
+}
+#add-task-button{
+    background: none;
+    border: none;
+    font: 20px;
+    color: #00c1b2;
+}
+@media screen and (max-width: 380px){
+    .notebook-button{
+        padding: 10px;
+        font-size: 14px;
+    }
+}

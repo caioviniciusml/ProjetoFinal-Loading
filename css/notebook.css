@@ -1,0 +1,104 @@
+#notebook{
+    width: 100%;
+}
+#notebook-name{
+    font-size: 40px;
+    margin-bottom: 10px;
+    background-color: inherit;
+    border: none;
+    max-height: 50px;
+    max-width: 80%;
+    font-family: 'Marker';
+}
+#notebook-name::-webkit-scrollbar{
+    display: none;
+}
+.task{
+    margin: 2px 0;
+    display: flex;
+    align-items: center;
+    font-size: 26px;
+}
+.notebook-button{
+    padding: 10px 25px;
+    font: inherit;
+    font-size: 28px;
+}
+#notebook-advice{
+    font-size: 20px;
+}
+#notebook-tasks{
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100px;
+    font-family: 'Marker';
+}
+#delete-task-button{
+    margin-left: auto;
+    color: #e63946;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    background-color: inherit;
+}
+#delete-task-button img{
+    height: 20px;
+}
+#notebook-options-buttons{
+    margin-top: 15px;
+    align-self: center;
+}
+#delete-notebook-button{
+    padding: 5px 8px;
+    background-color: #e63946;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: #EDECEE;
+    border: 2px solid #e63946;
+    border-radius: 13px;
+}
+#clear-notebook-button{
+    padding: 5px 8px;
+    background-color: inherit;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: #e63946;
+    border: 2px solid #e63946;
+    border-radius: 13px;
+    transition: 0.5s all;
+}
+#clear-notebook-button:hover{
+    background-color: #e63946;
+    color: #EDECEE;
+}
+@media screen and (max-width: 600px){
+    .task{
+        align-items: flex-start;
+    }
+    #all-user-notebooks{
+        display: flex;
+    }
+    .notebook-button{
+        padding: 10px;
+        font-size: 20px;
+    }
+    #delete-notebook-button{
+        padding: 5px 8px;
+        font-size: 12px;
+        border-radius: 13px;
+    }
+    #clear-notebook-button{
+        padding: 5px 8px;
+        font-size: 12px;
+        border-radius: 13px;
+    }
+}
+@media screen and (max-width: 380px){
+    .notebook-button{
+        padding: 10px;
+        font-size: 14px;
+    }
+    #delete-task-button img{
+        height: 15px;
+    }
+}
