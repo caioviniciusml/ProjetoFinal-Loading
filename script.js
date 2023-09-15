@@ -197,3 +197,9 @@ class App{
 }
 
 const app = new App();
+
+window.addEventListener('keypress', (e) =>{
+    if (e.key == 'Enter'){
+        app.addTaskToNotebook();
+    }
+})
