@@ -1,112 +1,98 @@
-class Task{
-    constructor(taskName){
-        this.name = taskName;
-        this.done = false;
+function Task(desc, done = false){
+    this.id = Date.now();
+    this.desc = desc;
+    this.done = done;
+
+    function toggleTaskStatus(){
+        this.done = !this.done;
     }
 }
 
-class Notebook{
-    constructor(notebookTasks, notebookColor){
-        this.id = Date.now();
-        this.tasks = notebookTasks
-        this.color = notebookColor;
+function TaskPage(pageName = 'My Notes', pageTasks = new Map(), pageColor = '#000'){
+    this.id = Date.now();
+    this.name = pageName;
+    this.tasks = pageTasks;
+    this.color = pageColor;
+
+    function setPageName(newPageName){
+        this.name = newPageName;
     }
-    createTask(newTaskName){
-        const newTask = new Task(newTaskName);
-        this.addTask(newTask);
+    function setPageColor(newPageColor){
+        this.color = newPageColor;
     }
-    addTask(task){
-        this.tasks.push(task);
+    function createTask(taskDesc){
+        const newTask = new Task(taskDesc);
+        this.tasks.set(newTask.id, newTask);
     }
-    changeTaskStatus(taskIndex){
-        if (this.tasks[taskIndex].done === true){
-            this.tasks[taskIndex].done = false;
-        } else{
-            this.tasks[taskIndex].done = true;
-        }
+    function deleteTask(task){
+        this.tasks.delete(task.id);
     }
-    deleteTask(taskIndex){
-        this.tasks.splice(taskIndex, 1);
-    }
-    clearTasks(){
-        this.tasks = [];
+    function clearPage(){
+        this.tasks.clear();
     }
 }
+
+function getUserTaskPagesFromLS(){  
+    if (localStorage.getItem('userTaskPages') === null){
+        return [new TaskPage()];
+    }else{ 
+        let userTaskPagesJSON = JSON.parse(localStorage.getItem('userNotebooks'))
+        let userTaskPages = [];
+
+        for (let taskPage of userTaskPagesJSON){
+            let taskPageObject = new TaskPage(taskPage.name, taskPage.tasks, taskPage.color);
+            userTaskPages.push(taskPageObject);
+        }
+
+        return userTaskPages;
+    }
+}
+
+function setUserTaskPagePagesInLS(){
+    localStorage.setItem('userTaskPages', JSON.stringify(userTaskPages));
+}
+
+function getCurrentTaskPageFromLS(){
+    if (localStorage.getItem('currentTaskPage') === null){
+        return 0;
+    }else{ 
+        return parseInt(localStorage.getItem('currentTaskPage'));
+    }
+}
+
+function setCurrentTaskPageInLS(taskPageId){
+    currentTaskPage = taskPageId;
+    localStorage.setItem('currentTaskPage', taskPageId);
+}
+
+let userTaskPages = getUserTaskPagesFromLS();
+let currentTaskPage = getCurrentTaskPageFromLS();
+
+
+
 
 class App{
     constructor(){
-        this.userNotebooksMax = 4;
-        this.notebooksAvailableColors = this.getNotebooksAvailableColors();
-        this.updateNotebooksAvailableColors();
-        this.userNotebooks = this.getUserNotebooks();
         this.updateUserNotebooks();
-        this.actualNotebookIndex = this.getActualNotebookIndex();
-        this.selectNotebook(this.actualNotebookIndex);
         this.renderApp();
     }
-    getUserNotebooks(){  
-        if (localStorage.getItem('userNotebooks') === null){
-            return [new Notebook([], this.useNotebookColor())];
-        }else{ 
-            const userNotebooksJSON = JSON.parse(localStorage.getItem('userNotebooks'))
-            let userNotebooks = [];
-
-            for (let notebook of userNotebooksJSON){
-                const notebookInstance = new Notebook (notebook.tasks, notebook.color);
-                userNotebooks.push(notebookInstance);
-            }
-
-            return userNotebooks;
-        }
-    }
-    updateUserNotebooks(){
-        localStorage.setItem('userNotebooks', JSON.stringify(this.userNotebooks));
-    }
-    getActualNotebookIndex(){
-        if (localStorage.getItem('actualNotebookIndex') === null){
-            return 0;
-        }else{ 
-            return parseInt(localStorage.getItem('actualNotebookIndex'));
-        }
-    }
-    setActualNotebook(notebookIndex){
-        this.actualNotebookIndex = notebookIndex;
-        localStorage.setItem('actualNotebookIndex', notebookIndex);
-    }
-    getNotebooksAvailableColors(){
-        if (localStorage.getItem('notebooksAvailableColors') === null){
-            return ['rgb(238, 232, 170)', 'rgb(170, 247, 170)', 'rgb(160, 213, 247)', 'rgb(252, 205, 221)'];
-        }else{ 
-            return JSON.parse(localStorage.getItem('notebooksAvailableColors'));
-        }
-    }
-    updateNotebooksAvailableColors(){
-        localStorage.setItem('notebooksAvailableColors', JSON.stringify(this.notebooksAvailableColors));
-    }
-    useNotebookColor(){
-        const color = this.notebooksAvailableColors[0];
-        this.notebooksAvailableColors.splice(0,1);
-        this.updateNotebooksAvailableColors();
-        return color;
-    }
-    addNotebookColor(color){
-        this.notebooksAvailableColors.push(color);
-        this.updateNotebooksAvailableColors();
-    }
-    createNotebook(){
+    createTaskPage(){
         const newNotebook = new Notebook([], this.useNotebookColor());
         this.addNotebook(newNotebook);
     }
-    addNotebook(newNotebook){
-        this.userNotebooks.push(newNotebook);
-        this.updateUserNotebooks();
-        this.selectNotebook(this.userNotebooks.indexOf(newNotebook));
-    }
-    selectNotebook(notebookIndex){
+    selectCurrentTaskPage(notebookIndex){
         this.setActualNotebook(notebookIndex);
         this.renderApp();
     }
-    addTaskToNotebook(){
+    deleteTaskPage(){
+        if (this.userNotebooks.length > 1){
+            this.addNotebookColor(this.userNotebooks[this.actualNotebookIndex].color);
+            this.userNotebooks.splice(this.actualNotebookIndex, 1);
+            this.updateUserNotebooks();
+            this.selectNotebook(0);
+        }
+    }
+    addTaskToTaskPage(){
         const newTaskName = document.getElementById('new-task-text-field').value;
         const actualNotebook = this.userNotebooks[this.actualNotebookIndex];
 
@@ -117,31 +103,6 @@ class App{
             this.updateUserNotebooks();
             location.reload();
         }
-    }
-    clearNotebook(){
-        this.userNotebooks[this.actualNotebookIndex].clearTasks();
-        this.updateUserNotebooks();
-        this.renderApp();
-    }
-    deleteNotebook(){
-        if (this.userNotebooks.length > 1){
-            this.addNotebookColor(this.userNotebooks[this.actualNotebookIndex].color);
-            this.userNotebooks.splice(this.actualNotebookIndex, 1);
-            this.updateUserNotebooks();
-            this.selectNotebook(0);
-        }
-    }
-    completeTask(taskIndex){
-        const actualNotebook = this.userNotebooks[this.actualNotebookIndex];
-        actualNotebook.changeTaskStatus(taskIndex);
-        this.updateUserNotebooks();
-        this.renderApp();
-    }
-    deleteTask(taskIndex){
-        const actualNotebook = this.userNotebooks[this.actualNotebookIndex];
-        actualNotebook.deleteTask(taskIndex);
-        this.updateUserNotebooks();
-        this.renderApp();
     }
     renderUserNotebooks(){
         const userNotebooksNav = document.getElementById('all-user-notebooks');
