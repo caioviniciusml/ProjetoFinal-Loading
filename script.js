@@ -68,9 +68,6 @@ function setCurrentTaskPageInLS(taskPageId){
 let userTaskPages = getUserTaskPagesFromLS();
 let currentTaskPage = getCurrentTaskPageFromLS();
 
-
-
-
 class App{
     constructor(){
         this.updateUserNotebooks();
